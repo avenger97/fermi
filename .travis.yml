@@ -17,10 +17,10 @@ before_install:
   - rm arduino-$ARD_VER-linux64.tar.xz
   
 install:
-  - ln -s $PWD /usr/local/share/arduino/libraries/HVAC
+  - ln -s $PWD /usr/local/share/arduino/libraries/motor
   
 script:
-  - arduino --verify --board ${BOARD} $PWD/Arduino/HVAC/HVAC_Arduino.ino
+  - arduino --verify --board ${BOARD} $PWD/fermi.ino
  
   
 notifications:
