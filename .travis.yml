@@ -1,8 +1,24 @@
 language: c
- sudo: false # only for faster builds
- compiler: 
- - clang
- - gcc
- script:
- - gcc -o test test.c // we can use gcc instead of clang too
- - ./test 
+sudo: false
+cache:
+  directories:
+    - ~/arduino_ide
+    - ~/.arduino15/packages/
+git:
+  depth: false
+  quiet: true
+env:
+  global:
+     - ARDUINO_IDE_VERSION="1.8.7"
+before_install:
+  - source $TRAVIS_BUILD_DIR/install.sh
+script:
+  - build_platform esp32
+  - build_platform uno
+  - build_platform leonardo
+  - build_platform zero
+  - build_platform esp8266
+notifications:
+  email:
+    on_success: change
+    on_failure: change
