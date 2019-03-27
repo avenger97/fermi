@@ -1,26 +1,36 @@
-matrix:
- include:
-      language: c
-      sudo: false
-      cache:
-      directories:
-           - ~/arduino_ide
-            - ~/.arduino15/packages/
-      git:
-      depth: false
-      quiet: true
-    env:
-      global:
-     - ARDUINO_IDE_VERSION="1.8.7"
+language: c
+
 before_install:
-  - source $TRAVIS_BUILD_DIR/install.sh
+  - ARD_VER="1.8.9"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
+  - sleep 5
+  - export DISPLAY=:1.0
+  - echo "Downloading version $ARD_VER of the Arduino IDE..."
+  - wget http://downloads.arduino.cc/arduino-$ARD_VER-linux64.tar.xz
+  - echo "Extracting the Arduino IDE..."
+  - tar xf arduino-$ARD_VER-linux64.tar.xz
+  - echo "Moving Arduino IDE..."
+  - sudo mv arduino-$ARD_VER /usr/local/share/arduino
+  - echo "Linking Arduino IDE..."
+  - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
+  - echo "Removing Arduino IDE ver $ARD_VER tar that was downloaded..."
+  - rm arduino-$ARD_VER-linux64.tar.xz
+  
+install:
+  - ln -s $PWD /usr/local/share/arduino/libraries/HVAC
+  
 script:
-  - build_platform esp32
-  - build_platform uno
-  - build_platform leonardo
-  - build_platform zero
-  - build_platform esp8266
+  - arduino --verify --board ${BOARD} $PWD/Arduino/HVAC/HVAC_Arduino.ino
+ 
+  
 notifications:
   email:
     on_success: change
     on_failure: change
+    
+env:
+  global:
+    - IDE_VERSION=1.8.9
+  matrix:
+    - BOARD=arduino:avr:uno IDE_VERSION=1.8.9
+    - BOARD=arduino:avr:uno
