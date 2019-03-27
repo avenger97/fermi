@@ -1,4 +1,4 @@
-language: arduino api
+language: c
  sudo: false # only for faster builds
  compiler: 
  - clang
